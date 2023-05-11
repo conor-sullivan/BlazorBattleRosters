@@ -104,25 +104,28 @@ namespace BlazorBattleRosters.Data.Services
         /// </summary>
         /// <param name="roster">RosterModel</param>
         /// <param name="userId">User Id provided by Identity.</param>
-        /// <returns>True or throws exception.</returns>
-        public async Task<bool> CreateRoster(RosterModel roster, string userId)
+        /// <returns>Created RosterModel, including the new roster ID or throws exception.</returns>
+        public async Task<RosterModel> CreateRoster(RosterModel roster, string userId)
         {
             try
             {
                 using (IDbConnection connection = new SqlConnection(_connectionString))
                 {
                     var p = new DynamicParameters();
+                    p.Add("@id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
                     p.Add("@OwnerId", userId);
                     p.Add("@Name", roster.Name);
                     await connection.ExecuteAsync("dbo.sp_Rosters_Create", p, commandType: CommandType.StoredProcedure);
+                    roster.Id = p.Get<int>("@id");
                 }
             }
+            
             catch (Exception)
             {
 
                 throw;
             }
-            return true;
+            return roster;
         }
     }
 }
