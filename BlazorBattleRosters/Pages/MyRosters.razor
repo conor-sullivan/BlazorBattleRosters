@@ -43,7 +43,6 @@
                             <th>
                                 Last Modified
                             </th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,11 +54,6 @@
                                 </td>
                                 <td>
                                     @roster.LastModified.ToShortDateString()
-                                </td>
-                                <td>
-                                    <a>Edit</a> |
-                                    <a>Details</a> |
-                                    <input type="button" value="Delete" @onclick="() => DeleteRoster(roster.Id)" class="btn btn-danger" />
                                 </td>
                             </tr>
                         }
@@ -109,7 +103,7 @@
     /// <returns>IEnumberable list of RosterModel.</returns>
     protected async Task GetRosters()
     {
-        rosterEntries = await RostersServices.GetRosters(oldDbUserId);
+        rosterEntries = await RostersServices.GetRostersByUserId(oldDbUserId);
     }
 
     /// <summary>

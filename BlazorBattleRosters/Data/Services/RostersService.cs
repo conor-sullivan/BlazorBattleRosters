@@ -25,7 +25,7 @@ namespace BlazorBattleRosters.Data.Services
         /// <summary>
         ///     Execute stored procedure to delete roster from database.
         /// </summary>
-        /// <param name="rosterId"></param>
+        /// <param name="rosterId">RosterModel.Id</param>
         /// <returns>True or throws exception.</returns>
         public async Task<bool> DeleteRoster(int rosterId)
         {
@@ -50,7 +50,7 @@ namespace BlazorBattleRosters.Data.Services
         ///     Execute stored procedure to get a single roster from the database.
         ///     Execute method GetUnitsByRosterId() to populate roster.Units.
         /// </summary>
-        /// <param name="rosterId"></param>
+        /// <param name="rosterId">RosterModel.Id</param>
         /// <returns>A single roster model.</returns>
         public async Task<RosterModel> GetRosterById(int rosterId)
         {
@@ -68,7 +68,7 @@ namespace BlazorBattleRosters.Data.Services
         /// <summary>
         ///     Execute stored procedure to get all units that belong to a given roster.
         /// </summary>
-        /// <param name="rosterId"></param>
+        /// <param name="rosterId">RosterModel.Id</param>
         /// <returns>IEnumerable List of UnitModel.</returns>
         public async Task<IEnumerable<UnitModel>> GetUnitsByRosterId(int rosterId)
         {
@@ -87,7 +87,7 @@ namespace BlazorBattleRosters.Data.Services
         /// </summary>
         /// <param name="userId">User ID provided by Identity.</param>
         /// <returns>IEnumerable list of RosterModel.</returns>
-        public async Task<IEnumerable<RosterModel>> GetRosters(string userId)
+        public async Task<IEnumerable<RosterModel>> GetRostersByUserId(string userId)
         {
             IEnumerable<RosterModel> rosters;
             using (IDbConnection connection = new SqlConnection(_connectionString))
@@ -97,6 +97,45 @@ namespace BlazorBattleRosters.Data.Services
                 rosters = await connection.QueryAsync<RosterModel>("dbo.sp_Rosters_GetAllByUserId", p, commandType: CommandType.StoredProcedure);
             }
             return rosters;
+        }
+
+        /// <summary>
+        ///     Execute stored procedure to get all weapons that belong to a given unit.
+        /// </summary>
+        /// <param name="unitId">UnitModel.Id</param>
+        /// <returns>IEnumerable list of WeaponModel.</returns>
+        public async Task<IEnumerable<WeaponModel>> GetWeaponsByUnitId(int unitId)
+        {
+            IEnumerable<WeaponModel> weapons;
+            using (IDbConnection connection = new SqlConnection(_connectionString))
+            {
+                var p = new DynamicParameters();
+                p.Add("@UnitId", unitId);
+                weapons = await connection.QueryAsync<WeaponModel>("dbo.sp_Weapons_GetByUnitId", p, commandType: CommandType.StoredProcedure);
+            }
+
+            foreach (WeaponModel weapon in weapons)
+            {
+                weapon.Abilities = await GetWeaponAbilitiesByWeaponId(weapon.Id);
+            }
+            return weapons;
+        }
+
+        /// <summary>
+        ///     Execute stored procedure to get all weapon abilities that belong to a given weapon.
+        /// </summary>
+        /// <param name="weaponId">WeaponModel.Id</param>
+        /// <returns>IEnumerable list of WeaponAblitiesModel</returns>
+        public async Task<IEnumerable<WeaponAbilityModel>> GetWeaponAbilitiesByWeaponId(int weaponId)
+        {
+            IEnumerable<WeaponAbilityModel> weaponAblities;
+            using (IDbConnection connection = new SqlConnection(_connectionString))
+            {
+                var p = new DynamicParameters();
+                p.Add("@WeaponId", weaponId);
+                weaponAblities = await connection.QueryAsync<WeaponAbilityModel>("dbo.sp_WeaponAbilities_GetByWeaponId", p, commandType: CommandType.StoredProcedure);
+            }
+            return weaponAblities;
         }
 
         /// <summary>
@@ -126,6 +165,40 @@ namespace BlazorBattleRosters.Data.Services
                 throw;
             }
             return roster;
+        }
+
+        /// <summary>
+        ///     Execute stored procedure to get all wargear that belongs to a given unit.
+        /// </summary>
+        /// <param name="unitId">UnitModel.Id</param>
+        /// <returns>IEnumerable list of WarGearModel.</returns>
+        public async Task<IEnumerable<WarGearModel>> GetWarGearByUnitId(int unitId)
+        {
+            IEnumerable<WarGearModel> warGear;
+            using (IDbConnection connection = new SqlConnection(_connectionString))
+            {
+                var p = new DynamicParameters();
+                p.Add("@UnitId", unitId);
+                warGear = await connection.QueryAsync<WarGearModel>("dbo.sp_WarGear_GetByUnitId", p, commandType: CommandType.StoredProcedure);
+            }
+            return warGear;
+        }
+
+        /// <summary>
+        ///     Execute stored procedure to get all unit abilities that belong to a given unit.
+        /// </summary>
+        /// <param name="unitId">UnitModel.Id</param>
+        /// <returns>IEnumerable list of UnitAbilityModel.</returns>
+        public async Task<IEnumerable<UnitAbilityModel>> GetUnitAbilitiesByUnitId(int unitId)
+        {
+            IEnumerable<UnitAbilityModel> unitAbilities;
+            using (IDbConnection connection = new SqlConnection(_connectionString))
+            {
+                var p = new DynamicParameters();
+                p.Add("@UnitId", unitId);
+                unitAbilities = await connection.QueryAsync<UnitAbilityModel>("dbo.sp_UnitAbilities_GetByUnitId", p, commandType: CommandType.StoredProcedure);
+            }
+            return unitAbilities;
         }
     }
 }
