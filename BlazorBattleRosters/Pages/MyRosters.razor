@@ -1,0 +1,106 @@
+﻿@page "/myrosters"
+@using BlazorBattleRosters.Data.Models
+@using BlazorBattleRosters.Data.IServices
+@inject NavigationManager NavigationManager
+
+@inject IRostersService RostersServices
+
+<PageTitle>Battle Rosters</PageTitle>
+
+@if (rosterEntries == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h1 class="text-center">YOUR BATTLE ROSTERS</h1>
+    <hr/>
+    <form>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="ProductName" class="control-label">Create New Roster</label>
+                    <input for="ProductName" class="form-control" @bind="@newRoster.Name" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="button" class="btn btn-primary" @onclick="@CreateRoster" value="Save" />
+
+                </div>
+            </div>
+        </div>
+        <table class="table table-light table-hover">
+            <thead class="text-uppercase table-secondary">
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Last Modified
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (RosterModel roster in rosterEntries)
+                {
+                    <tr @onclick="() => EditRoster(roster.Id)">
+                        <td>
+                            @roster.Name
+                        </td>
+                        <td>
+                            @roster.LastModified.ToShortDateString()
+                        </td>
+                        <td>
+                            <a>Edit</a> |
+                            <a>Details</a> |
+                            <input type="button" value="Delete" @onclick="() => DeleteRoster(roster.Id)" class="btn btn-danger" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+}
+
+@code {
+    IEnumerable<RosterModel>? rosterEntries;
+    RosterModel newRoster = new RosterModel();
+    private string userId = "afee9e21-2c3c-4fda-97e5-6a573e1dbb70";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await this.GetRosterDetails();
+    }
+
+    protected async Task GetRosterDetails()
+    {
+        rosterEntries = await RostersServices.GetRosters(userId);
+    }
+
+    protected async Task CreateRoster()
+    {
+        await RostersServices.SaveRosterDetails(newRoster, userId);
+        await this.GetRosterDetails();
+        this.ClearAll();
+    }
+
+    protected async Task DeleteRoster(int id)
+    {
+        await RostersServices.DeleteRoster(id);
+        await this.GetRosterDetails();
+    }
+
+    void EditRoster(int id)
+    {
+        NavigationManager.NavigateTo("rosterunits/"+id);
+    }
+
+    public void ClearAll()
+    {
+        newRoster.Name = string.Empty;
+    }
+}
