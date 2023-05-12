@@ -26,7 +26,7 @@ namespace BlazorBattleRosters.Data.Models
         public UnitImageModel? Image { get; set; }
         public IEnumerable<KeywordsModel>? Keywords { get; set; }
         public IEnumerable<WarGearModel>? WarGear { get; set; }
-        public IEnumerable<WeaponAbilityModel>? Weapons { get; set; }
+        public IEnumerable<WeaponModel>? Weapons { get; set; }
         public IEnumerable<UnitAbilityModel>? Abilities { get; set; }
     }
 }

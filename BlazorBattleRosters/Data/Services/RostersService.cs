@@ -79,6 +79,10 @@ namespace BlazorBattleRosters.Data.Services
                 p.Add("@RosterId", rosterId);
                 units = await connection.QueryAsync<UnitModel>("dbo.sp_Units_GetByRosterId", p, commandType: CommandType.StoredProcedure);
             }
+            foreach (UnitModel unit in units)
+            {
+                unit.Weapons = await GetWeaponsByUnitId(unit.Id);
+            }
             return units;
         }
 

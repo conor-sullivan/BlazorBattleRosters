@@ -5,64 +5,25 @@
 
 @inject IRostersService RostersServices
 
+<container>
+    <h1 class="text-center text-uppercase">@rosterDetails.Name</h1>
+    <h3>RosterUnits</h3>
 
-<h1>@rosterDetails.Name</h1>
-
-<h3>RosterUnits</h3>
-
-<p>units go here...</p>
-<div>
-    <table class="table table-hover">
-        <thead class="text-uppercase table-secondary">
-            <tr>
-                <th scope="col">Number of Models</th>
-                <th scope="col">Name</th>
-                <th scope="col">M</th>
-                <th scope="col">WS</th>
-                <th scope="col">BS</th>
-                <th scope="col">S</th>
-                <th scope="col">T</th>
-                <th scope="col">W</th>
-                <th scope="col">A</th>
-                <th scope="col">Ld</th>
-                <th scope="col">Sv</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-
-            @if (rosterDetails.Units != null)
-            {
-                @foreach (UnitModel unit in rosterDetails.Units)
-                {
-                    <tr>
-                        <td>@unit.NumberOfModels</td>
-                        <td>@unit.Name</td>
-                        <td>@unit.Movement</td>
-                        <td>@unit.WeaponSkill</td>
-                        <td>@unit.BallisticSkill</td>
-                        <td>@unit.Strength</td>
-                        <td>@unit.Toughness</td>
-                        <td>@unit.Wounds</td>
-                        <td>@unit.Attacks</td>
-                        <td>@unit.Leadership</td>
-                        <td>@unit.SaveRoll</td>
-                        <td>
-                            <a asp-controller="Unit" asp-action="Details" asp-route-id="@unit.Id">Details</a>
-                        </td>
-
-
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
-</div>
+    @if (rosterDetails.Units != null)
+    {
+        @foreach (UnitModel unit in rosterDetails.Units)
+        {
+            <Unit model="@unit"></Unit>
+        }
+    }
+    
+</container>
 
 @code {
     [Parameter]
     public int rosterId { get; set; }
     RosterModel rosterDetails = new RosterModel();
+
 
     protected override async Task OnInitializedAsync()
     {
