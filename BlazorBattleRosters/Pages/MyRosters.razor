@@ -15,50 +15,26 @@
         }
         else
         {
-            <h1 class="text-center">YOUR BATTLE ROSTERS</h1>
+            <h1 class="text-center">YOUR BATTLE ROSTERS <button @onclick="() => CreateRoster()" class="btn btn-lg btn-outline-success oi oi-plus"></button></h1>
             <hr />
             <form>
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label for="ProductName" class="control-label">Create New Roster</label>
-                            <input for="ProductName" class="form-control" @bind="@newRoster.Name" />
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                @foreach (RosterModel roster in rosterEntries)
+                {
+                    
                     <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="button" class="btn btn-primary" @onclick="@CreateRoster" value="Save" />
-
-                        </div>
+                        <div class="card bg-dark">
+                            <h5 class="card-header">@roster.Name</h5>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    @roster.LastModified
+                                 </p>
+                                 <a href="/rosterunits/@roster.Id" class="btn btn-primary">View</a>
+                            </div>
+                        </div><br />
                     </div>
+                }
                 </div>
-                <table class="table table-light table-hover">
-                    <thead class="text-uppercase table-secondary">
-                        <tr>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                Last Modified
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (RosterModel roster in rosterEntries)
-                        {
-                            <tr @onclick="() => EditRoster(roster.Id)">
-                                <td>
-                                    @roster.Name
-                                </td>
-                                <td>
-                                    @roster.LastModified.ToShortDateString()
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
             </form>
         }
     </Authorized>
@@ -70,7 +46,7 @@
 
 
 @code {
-    IEnumerable<RosterModel>? rosterEntries;
+    List<RosterModel>? rosterEntries;
     RosterModel newRoster = new RosterModel();
     private string oldDbUserId = "afee9e21-2c3c-4fda-97e5-6a573e1dbb70";
     private string? userId;
@@ -109,7 +85,7 @@
     /// <summary>
     ///     Create a new roster and save it to the database.
     /// </summary>
-    /// <returns>New IEnumerable List of RosterModel, including the created roster.</returns>
+    /// <returns>New List List of RosterModel, including the created roster.</returns>
     protected async Task CreateRoster()
     {
         RosterModel createdRoster = await RostersServices.CreateRoster(newRoster, oldDbUserId);

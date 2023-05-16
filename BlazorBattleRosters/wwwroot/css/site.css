@@ -406,53 +406,17 @@ a, a:hover {
         background-image: linear-gradient(80deg, rgba(189, 187, 73, 0.1), transparent 50%);
     }
 }
- 
-/*
-    Progress Bar
-*/
 
-.progress-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: lightgrey;
-    margin: 5px 0 5px
-}
-
-.progress {
-    height: 3px;
-    background: #333;
-    border-radius: 0;
-    box-shadow: none;
-    margin-bottom: 0px;
-    overflow: visible
-}
-
-.progress .progress-bar {
-    position: relative;
-    -webkit-animation: animate-positive 2s;
-    animation: animate-positive 2s
-}
-
-.progress .progress-value {
-    display: block;
-    font-size: 8px;
-    font-weight: 500;
-    color: black;
-    position: absolute;
-    top: -30px;
-    right: -25px
-}
-
-.progress .progress-bar:after {
-    content: "";
-    display: inline-block;
-    width: 10px;
+.numberSquare {
+    width: 36px;
+    height: 36px;
+    padding: 8px;
     background: #fff;
-    position: absolute;
-    top: -10px;
-    bottom: -10px;
-    right: -5px;
-    z-index: 1;
-      
+    border: 2px solid #666;
+    color: #666;
+    text-align: center;
+    font: 14px Arial, sans-serif;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
-

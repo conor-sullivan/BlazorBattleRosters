@@ -1,29 +1,78 @@
 ﻿@using BlazorBattleRosters.Data.Models;
 
 
-<article class="postcard small dark @Colors[ColorId]">
+<article class="postcard small dark @Colors[ColorId] w-auto">
 	<a class="postcard__img_link" href="#">
 		<img class="postcard__img" src="https://alkony.enerla.net/images/miniatures/Games_Workshop-Warhammer_40000_Ed9-Indomitus_set-Primaris_Space_Marines-Captain-1.jpg" alt="Image Title" />
 	</a>
 	
 	<div class="postcard__text">
-		<h1 class="postcard__title @Colors[ColorId]"><a href="#">@model?.Name</a></h1>
-		<div class="postcard__subtitle small">
-			<time datetime="@model?.LastModified">
-				<i class="fas fa-calendar-alt mr-2"></i>@model?.LastModified.ToShortDateString()
-			</time>
-
+		<h1 class="text-center postcard__title @Colors[ColorId]"><a href="#">@model?.Name</a></h1>
+		<div class="postcard__subtitle small text-center">
+			
 		</div>
-	
-			<div class="postcard__preview-txt">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi, fugiat asperiores inventore beatae accusamus odit minima enim, commodi quia, doloribus eius! Ducimus nemo accusantium maiores velit corrupti tempora reiciendis molestiae repellat vero. Eveniet ipsam adipisci illo iusto quibusdam, sunt neque nulla unde ipsum dolores nobis enim quidem excepturi, illum quos!</div>
+		<Stats model="@model" />
+		<br />
+		<div>
+			@if (model?.Weapons.Count() > 0)
+			{
+
+				<table class="table table-sm text-white">
+					<thead>
+						<tr>
+							<th scope="col">NAME</th>
+							<th scope="col">RANGE</th>
+							<th scope="col">STRENGTH</th>
+							<th scope="col">AP</th>
+							<th scope="col">DAMAGE</th>
+							<th scope="col">RULES</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (WeaponModel weapon in model.Weapons)
+						{
+							<tr>
+								<td>
+									@weapon.Name
+								</td>
+								<td>
+									@weapon.Range
+								</td>
+								<td>
+									@weapon.Strength
+								</td>
+								<td>
+									@weapon.ArmorPiercing
+								</td>
+								<td>
+									@weapon.Damage
+								</td>
+								<td>
+									@foreach (WeaponAbilityModel ability in weapon.Abilities)
+									{
+										<p>@ability.Rules</p>
+									}
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+
+			}
+		</div>
+
+		<div class="postcard__preview-txt">
 				<ul class="postcard__tagbox">
-					<li class="tag__item"><i class="fas fa-tag mr-2"></i>Podcast</li>
-					<li class="tag__item"><i class="fas fa-clock mr-2"></i>55 mins.</li>
-					<li class="tag__item play blue">
-						<a href="#"><i class="fas fa-play mr-2"></i>Play Episode</a>
-					</li>
+					@if (model?.Keywords != null)
+					{
+						@foreach (KeywordsModel keyword in model.Keywords)
+						{
+							<span><span class="badge rounded-pill bg-primary">@keyword.Name</span>&nbsp;</span>
+
+						}
+					}
 				</ul>
-		<Stats />
+   </div> 
 	</div>
 
 

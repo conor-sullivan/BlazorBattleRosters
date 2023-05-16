@@ -2,28 +2,74 @@
 @using BlazorBattleRosters.Data.Models
 @using BlazorBattleRosters.Data.IServices
 @inject NavigationManager NavigationManager
-
+@inject IJSRuntime JsRuntime
 @inject IRostersService RostersServices
 
-<container>
-    <h1 class="text-center text-uppercase">@rosterDetails.Name</h1>
-    <h3>RosterUnits</h3>
-
-    @if (rosterDetails.Units != null)
+<container>    
+    <h1 class="text-center">@Roster.Name </h1>
+    <hr />
+    <button @onclick="() => CreateUnit()" class="btn btn-lg btn-outline-success"><span class="oi oi-plus"></span> New Unit</button>
+    
+    @if (Roster.Units != null)
     {
-        @foreach (UnitModel unit in rosterDetails.Units)
+        <br />
+        <br />
+        @foreach (UnitModel unit in Roster.Units)
         {
-            <Unit model="@unit"></Unit>
+            <Unit Model="@unit"></Unit>
+            <button class="btn btn-primary" @onclick="() => EditUnit(unit)">Edit</button>
         }
     }
     
+    <hr />
+    <div class="float-end">
+        <button @onclick="() => DeleteRoster()" class="btn btn-danger btn-sm">
+            <strong><span class="oi oi-trash"></span> Delete </strong>
+        </button>
+    </div>
 </container>
+
+<EditUnitModal @ref="@ModalDialog" Title="Unit Details" Model="UnitToEdit">
+    <button class="btn btn-success">Save</button>
+</EditUnitModal>
+
+
 
 @code {
     [Parameter]
-    public int rosterId { get; set; }
-    RosterModel rosterDetails = new RosterModel();
+    public int RosterId { get; set; }
+    RosterModel Roster = new RosterModel();
+    private EditUnitModal? ModalDialog { get; set; }
+    public UnitModel UnitToEdit { get; set; } = new UnitModel();
 
+    protected void GoHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    protected void CreateUnit()
+    {
+        UnitToEdit = new UnitModel();
+        ModalDialog.Open();
+    }
+
+    private void EditUnit(UnitModel unit)
+    {
+        UnitToEdit = unit;
+        ModalDialog.Open();
+    }
+
+    protected async Task DeleteRoster()
+    {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+        if (confirmed)
+        {
+            await RostersServices.DeleteRoster(RosterId);
+            this.GoHome();
+        }
+        return;
+
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -32,6 +78,6 @@
 
     protected async Task GetRosterDetails()
     {
-        rosterDetails = await RostersServices.GetRosterById(rosterId);
+        Roster = await RostersServices.GetRosterById(RosterId);
     }
 }

@@ -9,6 +9,6 @@ namespace BlazorBattleRosters.Data.Models
         public string Name { get; set; } = string.Empty;
         public DateTime DateCreated { get; set; }
         public DateTime LastModified { get; set; }
-        public IEnumerable<UnitModel>? Units { get; set; }
+        public List<UnitModel>? Units { get; set; }
     }
 }
