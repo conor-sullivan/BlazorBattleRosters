@@ -23,9 +23,9 @@ namespace BlazorBattleRosters.Data.Models
         public DateTime LastModified { get; set; }
         public string OwnerId { get; set; } = string.Empty;
         public int RosterId { get; set; }
-        public UnitImageModel? Image { get; set; }
-        public List<KeywordsModel>? Keywords { get; set; }
-        public List<WarGearModel>? WarGear { get; set; }
+        public UnitImageModel? Image { get; set; } = new UnitImageModel();
+        public List<KeywordsModel>? Keywords { get; set; } = new List<KeywordsModel>();
+        public List<WarGearModel>? WarGear { get; set; } = new List<WarGearModel>();
         public List<WeaponModel>? Weapons { get; set; } = new List<WeaponModel>();
         public List<UnitAbilityModel>? Abilities { get; set; }
     }

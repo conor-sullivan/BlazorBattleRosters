@@ -16,8 +16,7 @@
         <br />
         @foreach (UnitModel unit in Roster.Units)
         {
-            <Unit Model="@unit"></Unit>
-            <button class="btn btn-primary" @onclick="() => EditUnit(unit)">Edit</button>
+            <Unit onEditUnitButtonClicked="() => EditUnit(unit)" Model="@unit"></Unit>
         }
     }
     
@@ -26,11 +25,15 @@
         <button @onclick="() => DeleteRoster()" class="btn btn-danger btn-sm">
             <strong><span class="oi oi-trash"></span> Delete </strong>
         </button>
-    </div>
+    </div><br /><br />
 </container>
 
 <EditUnitModal @ref="@ModalDialog" Title="Unit Details" Model="UnitToEdit">
-    <button class="btn btn-success">Save</button>
+    <div class="btn-group float-end">
+        
+        <button class="btn btn-danger" @onclick="() => CancelEdit()">Cancel</button>
+        <button class="btn btn-primary" @onclick="() => SaveUnitModel()">Save</button>
+    </div>
 </EditUnitModal>
 
 
@@ -38,19 +41,25 @@
 @code {
     [Parameter]
     public int RosterId { get; set; }
-    RosterModel Roster = new RosterModel();
-    private EditUnitModal? ModalDialog { get; set; }
+    public RosterModel Roster { get; set; } = new RosterModel();
+    public EditUnitModal? ModalDialog { get; set; }
     public UnitModel UnitToEdit { get; set; } = new UnitModel();
 
-    protected void GoHome()
+    private void GoHome()
     {
         NavigationManager.NavigateTo("/");
     }
 
-    protected void CreateUnit()
+    private void CreateUnit()
     {
         UnitToEdit = new UnitModel();
         ModalDialog.Open();
+    }
+
+    private async Task SaveUnitModel()
+    {
+        ModalDialog.Close();
+        await this.GetRosterDetails();
     }
 
     private void EditUnit(UnitModel unit)
@@ -59,7 +68,13 @@
         ModalDialog.Open();
     }
 
-    protected async Task DeleteRoster()
+    private async Task CancelEdit()
+    {
+        await this.GetRosterDetails();
+        ModalDialog.Close();
+    }
+
+    private async Task DeleteRoster()
     {
         bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
         if (confirmed)
@@ -68,7 +83,6 @@
             this.GoHome();
         }
         return;
-
     }
 
     protected override async Task OnInitializedAsync()
@@ -76,7 +90,7 @@
         await this.GetRosterDetails();
     }
 
-    protected async Task GetRosterDetails()
+    internal async Task GetRosterDetails()
     {
         Roster = await RostersServices.GetRosterById(RosterId);
     }

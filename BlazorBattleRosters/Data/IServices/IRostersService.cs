@@ -4,17 +4,22 @@ namespace BlazorBattleRosters.Data.IServices
 {
     public interface IRostersService
     {
-        Task<List<RosterModel>> GetRostersByUserId(string userId);
+        // Create
         Task<RosterModel> CreateRoster(RosterModel roster, string userId);
-        Task<RosterModel> GetRosterById(int rosterId);
-        Task<bool> DeleteRoster(int rosterId);
-        Task<List<UnitModel>> GetUnitsByRosterId(int rosterId);
-        Task<List<WeaponAbilityModel>> GetWeaponAbilitiesByWeaponId(int weaponId);
-        Task<List<WeaponModel>> GetWeaponsByUnitId(int unitId);
-        Task<List<WarGearModel>> GetWarGearByUnitId(int unitId);
-        Task<List<UnitAbilityModel>> GetUnitAbilitiesByUnitId(int unitId);
-        Task<List<KeywordsModel>> GetUnitKeywordsByUnitId(int unitId);
+        Task<UnitModel> CreateOrUpdateUnit(UnitModel unit, string userId);
 
+        // Read
+        Task<RosterModel> GetRosterById(int rosterId);
+        Task<List<RosterModel>> GetRostersByUserId(string userId);
+        Task<List<UnitModel>> GetUnitsByRosterId(int rosterId);
+
+        // Update
+        Task<RosterModel> UpdateRoster(RosterModel roster);
+        Task<UnitModel> UpdateUnit(UnitModel unit);
+
+        // Delete
+        Task<bool> DeleteRoster(int rosterId);
+        Task<bool> DeleteUnit(int unitId);
 
 	}
 }

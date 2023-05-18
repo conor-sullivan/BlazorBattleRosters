@@ -1,46 +1,44 @@
 ﻿@using BlazorBattleRosters.Data.Models;
-<div class="modal @modalClass" tabindex="-1" role="dialog" style="display:@modalDisplay; overflow-y: auto;">
+
+<div class="modal @_modalClass" tabindex="-1" role="dialog" style="display:@_modalDisplay; overflow-y: auto;">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content bg-dark">
             <div class="modal-header">
-                <h5 class="modal-title">@Title</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" @onclick="Close">
-                </button>
+                <h4 class="modal-title">@Title</h4>   
             </div>
             <div class="modal-body">
-                <EditForm Model="@Model">
-
+                <EditForm Model="@Model" >
                     <div class="form-floating ">
                         <InputText class="form-control" id="name" @bind-Value="Model.Name" placeholder="Name"></InputText>
                         <label class="text-dark" for="name">Name</label>
                     </div>
                     <hr />
                     <div class="row">
-                        <div class="col-md">
+                        <div class="col-sm">
                             <div class="form-floating">
                                 <InputNumber class="form-control" id="movement" @bind-Value="Model.Movement" placeholder="Movement Speed"></InputNumber>
                                 <label class="text-dark" for="movement">Movement</label>
                             </div>
                         </div>
-                        <div class="col-md">
+                        <div class="col-sm">
                             <div class="form-floating">
                                 <InputNumber class="form-control" id="weaponSkill" @bind-Value="Model.WeaponSkill" placeholder="Weapon Skill"></InputNumber>
                                 <label class="text-dark" for="weaponSkill">Weapon Skill</label>
                             </div>
                         </div>
-                        <div class="col-md">
+                        <div class="col-sm">
                             <div class="form-floating">
                                 <InputNumber class="form-control" id="ballisticSkill" @bind-Value="Model.BallisticSkill" placeholder="Ballistic Skill"></InputNumber>
                                 <label class="text-dark" for="ballisticSkill">Ballistic Skill</label>
                             </div>
                         </div>
-                        <div class="col-md">
+                        <div class="col-sm">
                             <div class="form-floating">
                                 <InputNumber class="form-control" id="strength" @bind-Value="Model.Strength" placeholder="Strength"></InputNumber>
                                 <label class="text-dark" for="strength">Strength</label>
                             </div>
                         </div>
-                        <div class="col-md">
+                        <div class="col-sm">
                             <div class="form-floating">
                                 <InputNumber class="form-control" id="toughness" @bind-Value="Model.Toughness" placeholder="Toughness"></InputNumber>
                                 <label class="text-dark" for="toughness">Toughness</label>
@@ -49,31 +47,31 @@
                     </div>
                     <br />
                     <div class="row">
-                        <div class="col-md">
+                        <div class="col-sm">
                             <div class="form-floating">
                                 <InputNumber class="form-control" id="wounds" @bind-Value="Model.Wounds" placeholder="Wounds"></InputNumber>
                                 <label class="text-dark" for="wounds">Wounds</label>
                             </div>
                         </div>
-                        <div class="col-md">
+                        <div class="col-sm">
                             <div class="form-floating">
                                 <InputNumber class="form-control" id="attacks" @bind-Value="Model.Attacks" placeholder="Attacks"></InputNumber>
                                 <label class="text-dark" for="attacks">Attacks</label>
                             </div>
                         </div>
-                        <div class="col-md">
+                        <div class="col-sm">
                             <div class="form-floating">
                                 <InputNumber class="form-control" id="leadership" @bind-Value="Model.Leadership" placeholder="Leadership"></InputNumber>
                                 <label class="text-dark" for="leadership">Leadership</label>
                             </div>
                         </div>
-                        <div class="col-md">
+                        <div class="col-sm">
                             <div class="form-floating">
                                 <InputNumber class="form-control" id="save" @bind-Value="Model.SaveRoll" placeholder="Save"></InputNumber>
                                 <label class="text-dark" for="save">Save</label>
                             </div>
                         </div>
-                        <div class="col-md">
+                        <div class="col-sm">
                             <div class="form-floating">
                                 <InputNumber class="form-control" id="pointsValue" @bind-Value="Model.PointsValue" placeholder="Points"></InputNumber>
                                 <label class="text-dark" for="pointsValue">Points</label>
@@ -81,37 +79,77 @@
                         </div>
                     </div>
                     <hr />
-                    <h5>Weapons</h5>
+                    <h4>
+                        Keywords
+                        <button type="submit" disabled style="display: none" aria-hidden="true"></button>
+                        <button @onclick="() => AddKeyword(Model)" class="btn btn-sm btn-outline-success"><span class="oi oi-plus"></span></button>
+                    </h4>
+                    @if (Model.Keywords != null)
+                    {
+                        <div class="row">
+                            @foreach (KeywordsModel keyword in Model.Keywords)
+                            {
+                                <div class="col-sm">
+                                    <div class="form-floating">
+                                        <InputText @bind-Value="@keyword.Name" class="form-control" id="keywordName" placeholder="Keyword" />
+                                        <label class="text-dark" for="keywordName">Keyword</label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    <hr />
+                    <h4>
+                        <button type="submit" disabled style="display: none" aria-hidden="true"></button>
+                        Weapons <button @onclick="() => AddWeapon(Model)" class="btn btn-sm btn-outline-success"><span class="oi oi-plus"></span></button>
+                    </h4>      
                     @if (Model.Weapons != null)
                     {
-                        @foreach (WeaponModel weapon in Model.Weapons)
+                        @foreach (WeaponModel weapon in Model.Weapons.OrderBy(w => w.Id))
                         {
-                            <h6>@weapon.Name</h6>
-                            <div class="form-floating ">
-                                <InputText @bind-Value="@weapon.Name" class="form-control" id="weaponName" placeholder="Weapon Name" />
-                                <label class="text-dark" for="weaponName">Weapon Name</label>
+                            <h5>
+                                @weapon.Name
+                                <button type="submit" disabled style="display: none" aria-hidden="true"></button>
+                                <button @onclick="() => AddWeaponAbility(weapon)" class="btn btn-sm btn-outline-success">Add @weapon.Name Ability</button>
+                            </h5>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div class="form-floating ">
+                                        <InputText @bind-Value="@weapon.Name" class="form-control" id="weaponName" placeholder="Weapon Name" />
+                                        <label class="text-dark" for="weaponName">Weapon Name</label>
+                                    </div>
+                                    <br />
+                                </div>
+                                @*TODO - Change to select dropdown.*@
+                                <div class="col-sm">
+                                    <div class="form-floating ">
+                                        <InputText @bind-Value="@weapon.Type" class="form-control" id="weaponType" placeholder="Weapon Type" />
+                                        <label class="text-dark" for="weaponType">Weapon Type</label>
+                                    </div>
+                                    <br />
+                                </div>
                             </div>
                             <br />
                             <div class="row">
-                                <div class="col-md">
+                                <div class="col-sm">
                                     <div class="form-floating">
                                         <InputNumber @bind-Value="@weapon.Range" type="number" class="form-control" id="range" placeholder="Range" />
                                         <label class="text-dark" for="range">Range</label>
                                     </div>
                                 </div>
-                                <div class="col-md">
+                                <div class="col-sm">
                                     <div class="form-floating">
                                         <InputNumber @bind-Value="@weapon.Strength" type="number" class="form-control" id="weaponStrength" placeholder="Strength" />
                                         <label class="text-dark" for="weaponStrength">Strength</label>
                                     </div>
                                 </div>
-                                <div class="col-md">
+                                <div class="col-sm">
                                     <div class="form-floating">
                                         <InputNumber @bind-Value="@weapon.ArmorPiercing" type="number" class="form-control" id="ap" placeholder="AP" />
                                         <label class="text-dark" for="ap">AP</label>
                                     </div>
                                 </div>
-                                <div class="col-md">
+                                <div class="col-sm">
                                     <div class="form-floating">
                                         <InputNumber @bind-Value="@weapon.Damage" type="number" class="form-control" id="damage" placeholder="Damage" />
                                         <label class="text-dark" for="ap">Damage</label>
@@ -119,26 +157,63 @@
                                 </div>
                             </div>
                             <br />
-                            <div class="row">
-                                <div class="col-md">
-                                    <div class="form-floating ">
-                                        <input class="form-control" id="rules" placeholder="Rules" />
-                                        <label class="text-dark" for="rules">Rules</label>
+                            @if (weapon.Abilities != null)
+                            {
+                                @foreach (WeaponAbilityModel ability in weapon.Abilities)
+                                {
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <div class="form-floating ">
+                                                <InputText @bind-Value="@ability.Rules" class="form-control" id="rules" placeholder="Weapon Ability" />
+                                                <label class="text-dark" for="rules">Weapon Abilitity</label>
+                                            </div>
+                                            
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <hr />
+                                    <br />
+                                }
+                            }
+                            
+                             
                         }
-                    }
-                    
+                        <hr />
+                        @if (Model.WarGear != null)
+                            {
+                                <h4>
+                                    Other WarGear
+                                    <button type="submit" disabled style="display: none" aria-hidden="true"></button>
+                                    <button @onclick="() => AddWarGear(Model)" class="btn btn-sm btn-outline-success"><span class="oi oi-plus"></span></button>
+                                </h4>
+                                
+                                    @foreach (WarGearModel wargear in Model.WarGear)
+                                    {
+                                        <div class="row">
+                                            <div class="col-sm">
+                                                <div class="form-floating">
+                                                    <InputText @bind-Value="@wargear.Name" class="form-control" id="warGearName" placeholder="WarGear Name" />
+                                                    <label class="text-dark" for="warGearName">WarGear Name</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm">
+                                                <div class="form-floating">
+                                                    <InputText @bind-Value="@wargear.Abilities" class="form-control" id="warGearAbility" placeholder="WarGear Ability" />
+                                                    <label class="text-dark" for="warGearAbility">WarGear Ability</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br />
+                                    }
+                            }
+                    }                    
                 </EditForm>
+                
                 @ChildContent
             </div>
         </div>
     </div>
 </div>
 
-@if (showBackdrop)
+@if (_showBackdrop)
 {
     <div class="modal-backdrop fade show"></div>
 }
@@ -154,28 +229,42 @@
     [Parameter]
     public UnitModel Model { get; set; } = new UnitModel();
 
-    private string modalDisplay = "none;";
-    private string modalClass = string.Empty;
-    private bool showBackdrop = false;
+    private string _modalDisplay = "none;";
+    private string _modalClass = string.Empty;
+    private bool _showBackdrop = false;
 
-    public UnitModel AddWeapon(UnitModel model)
+    private void AddWeapon(UnitModel model)
     {
+        model.Weapons?.Add(new WeaponModel());
+    }
 
-        model.Weapons.Add(new WeaponModel());
-        return model;
+    private void AddKeyword(UnitModel model)
+    {
+        model.Keywords?.Add(new KeywordsModel());
+    }
+
+    private void AddWeaponAbility(WeaponModel model)
+    {
+        model.Abilities?.Add(new WeaponAbilityModel());
+    }
+
+    private void AddWarGear(UnitModel model)
+    {
+        model.WarGear?.Add(new WarGearModel());
     }
 
     public void Open()
     {
-        modalDisplay = "block";
-        modalClass = "show";
-        showBackdrop = true;
+        _modalDisplay = "block";
+        _modalClass = "show";
+        _showBackdrop = true;
     }
 
     public void Close()
     {
-        modalDisplay = "none";
-        modalClass = string.Empty;
-        showBackdrop = false;
+        _modalDisplay = "none";
+        _modalClass = string.Empty;
+        _showBackdrop = false;
+        Model = new UnitModel();
     }
 }

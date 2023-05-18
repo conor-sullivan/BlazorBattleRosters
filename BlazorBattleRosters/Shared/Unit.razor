@@ -7,16 +7,15 @@
 	</a>
 	
 	<div class="postcard__text">
-		<h1 class="text-center postcard__title @Colors[ColorId]"><a href="#">@model?.Name</a></h1>
+		<button @onclick="EditUnitButtonClicked" class="btn btn-sm btn-outline-light text-center postcard__title @Colors[ColorId]">@Model.Name</button>
 		<div class="postcard__subtitle small text-center">
 			
 		</div>
-		<Stats model="@model" />
+		<Stats model="@Model" />
 		<br />
 		<div>
-			@if (model?.Weapons.Count() > 0)
+			@if (Model.Weapons?.Count() > 0)
 			{
-
 				<table class="table table-sm text-white">
 					<thead>
 						<tr>
@@ -29,7 +28,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach (WeaponModel weapon in model.Weapons)
+						@foreach (WeaponModel weapon in Model.Weapons)
 						{
 							<tr>
 								<td>
@@ -48,41 +47,49 @@
 									@weapon.Damage
 								</td>
 								<td>
-									@foreach (WeaponAbilityModel ability in weapon.Abilities)
+									@if (weapon.Abilities != null)
 									{
-										<p>@ability.Rules</p>
+										@foreach (WeaponAbilityModel ability in weapon.Abilities)
+										{
+											<p>@ability.Rules</p>
+										}
 									}
+									
 								</td>
 							</tr>
 						}
 					</tbody>
 				</table>
-
 			}
 		</div>
 
 		<div class="postcard__preview-txt">
 				<ul class="postcard__tagbox">
-					@if (model?.Keywords != null)
+				@if (Model?.Keywords != null)
 					{
-						@foreach (KeywordsModel keyword in model.Keywords)
+					@foreach (KeywordsModel keyword in Model.Keywords)
 						{
-							<span><span class="badge rounded-pill bg-primary">@keyword.Name</span>&nbsp;</span>
-
+							<span><span class="badge rounded-pill bg-gradient">@keyword.Name</span>&nbsp;</span>
 						}
 					}
 				</ul>
-   </div> 
+		</div> 
 	</div>
-
-
 </article>
 
 @code {
 	[Parameter]
-	public UnitModel? model { get; set; }
+	public UnitModel? Model { get; set; } = new UnitModel();
 	public int ColorId { get; set; } = 0;
 	public string[] Colors = { "blue", "green", "red", "yellow" };
+
+	[Parameter]
+	public EventCallback onEditUnitButtonClicked { get; set; }
+
+	protected async Task EditUnitButtonClicked()
+	{
+		await onEditUnitButtonClicked.InvokeAsync();
+	}
 
 	public Unit()
 	{

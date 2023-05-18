@@ -10,6 +10,6 @@
         public int ArmorPiercing { get; set; } = 0;
         public int Damage { get; set; } = 0;
         public int UnitId { get; set; } = 0;
-        public List<WeaponAbilityModel>? Abilities { get; set; }
+        public List<WeaponAbilityModel>? Abilities { get; set; } = new List<WeaponAbilityModel>();
     }
 }
