@@ -29,11 +29,12 @@
 </container>
 
 <EditUnitModal @ref="@ModalDialog" Title="Unit Details" Model="UnitToEdit">
-    <div class="btn-group float-end">
-        
-        <button class="btn btn-danger" @onclick="() => CancelEdit()">Cancel</button>
-        <button class="btn btn-primary" @onclick="() => SaveUnitModel()">Save</button>
+    <EditForm id="editUnit"  Model="@UnitToEdit" EditContext="@_editContext" OnSubmit="@HandleSubmit">
+    <div class="float-end"> 
+        <button class="btn btn-primary" type="submit" form="editUnit">Save</button>
     </div>
+    </EditForm>
+    <button class="btn btn-secondary" @onclick="() => CancelEdit()">Cancel</button>
 </EditUnitModal>
 
 
@@ -45,6 +46,24 @@
     public EditUnitModal? ModalDialog { get; set; }
     public UnitModel UnitToEdit { get; set; } = new UnitModel();
 
+    private EditContext? _editContext;
+    private string _oldDbUserId = "afee9e21-2c3c-4fda-97e5-6a573e1dbb70";
+
+
+
+    private async Task HandleSubmit()
+    {
+        if (_editContext != null && _editContext.Validate())
+        {
+            Console.WriteLine("WIN");
+        }
+        else
+        {
+            await this.SaveUnitModel(UnitToEdit);
+            Console.WriteLine($"Submitted {UnitToEdit.Name}");
+        }
+    }
+
     private void GoHome()
     {
         NavigationManager.NavigateTo("/");
@@ -52,13 +71,14 @@
 
     private void CreateUnit()
     {
-        UnitToEdit = new UnitModel();
+        UnitToEdit = new UnitModel() { RosterId = RosterId };
         ModalDialog.Open();
     }
 
-    private async Task SaveUnitModel()
+    private async Task SaveUnitModel(UnitModel model)
     {
         ModalDialog.Close();
+        await RostersServices.CreateOrUpdateUnit(model, _oldDbUserId);
         await this.GetRosterDetails();
     }
 

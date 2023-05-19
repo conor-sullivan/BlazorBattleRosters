@@ -82,6 +82,7 @@ namespace BlazorBattleRosters.Data.Services
                 {
                     var p = new DynamicParameters();
                     p.Add("@id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+                    p.Add("@Name", unit.Name);
                     p.Add("@Movement", unit.Movement);
                     p.Add("@WeaponSkill", unit.WeaponSkill);
                     p.Add("@BallisticSkill", unit.BallisticSkill);
@@ -335,6 +336,7 @@ namespace BlazorBattleRosters.Data.Services
             {
                 unit.Weapons = await GetWeaponsByUnitId(unit.Id);
                 unit.Keywords = await GetUnitKeywordsByUnitId(unit.Id);
+                unit.WarGear = await GetWarGearByUnitId(unit.Id);
             }
             return units;
         }

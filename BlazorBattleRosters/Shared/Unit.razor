@@ -19,7 +19,7 @@
 				<table class="table table-sm text-white">
 					<thead>
 						<tr>
-							<th scope="col">NAME</th>
+							<th scope="col">WEAPON NAME</th>
 							<th scope="col">RANGE</th>
 							<th scope="col">STRENGTH</th>
 							<th scope="col">AP</th>
@@ -56,6 +56,34 @@
 									}
 									
 								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			}
+		</div>
+
+		<div>
+			@if (Model.WarGear?.Count() > 0)
+			{
+				<table class="table table-sm text-white">
+					<thead>
+						<tr>
+							<th scope="col">WARGEAR NAME</th>
+							<th scope="col">ABILITIES</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (WarGearModel wargear in Model.WarGear)
+						{
+							<tr>
+								<td>
+									@wargear.Name
+								</td>
+								<td>
+									@wargear.Abilities
+								</td>
+
 							</tr>
 						}
 					</tbody>
